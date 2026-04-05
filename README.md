@@ -1,85 +1,26 @@
-# Core Reusable Catalog
+# CCC Core Catalog
 
-This catalog is not intended for end user adoption, but rather acts as a central mechanism for all other catalogs to reference. By maintaining this as a standalone version-controlled catalog, we can increase clarity as to the source of the controls when elements from this directory are brought in as shared entries to service-specific catalogs.
+This repository contains the core catalog for the [FINOS Common Cloud Controls](https://www.finos.org/common-cloud-controls-project) project — a set of reusable capabilities, threats, and controls that apply broadly across cloud service types.
 
-This catalog may be imported to other catalogs by adding the catalog data in a mapping reference entry, then targeting the relevant elements each by ID.
+Rather than duplicating common entries in every service-specific catalog, this catalog acts as a shared reference point. Service catalogs import from it by ID, keeping definitions consistent and centrally version-controlled.
 
-## Add this catalog to your metadata
+## Contents
 
-In your control catalog's metadata, simply add a new block within `mapping-references`.
+| File | Description |
+|---|---|
+| `capabilities.yaml` | Platform-level capabilities common to all cloud services |
+| `threats.yaml` | Threats applicable regardless of service type |
+| `controls.yaml` | Controls that address those cross-cutting threats |
+| `metadata.yaml` | Supplementary catalog metadata |
 
-Here's an example of what that would look like:
+## How other catalogs use this
 
-```yaml
-metadata:
-  id: NewSvc
-  title: Some New Cloud Service Category
-  version: ""
-  description: ""
-  last-modified: ""
-  mapping-references:
-    - id: CCC
-      title: Common Cloud Controls Core
-      version: v2025.08
-      url: https://github.com/finos/common-cloud-controls/releases/tag/v2025.08.Core
-      description: ""
-```
+Service catalogs in [capability-catalogs](https://github.com/common-cloud-controls/capability-catalogs), [threat-catalogs](https://github.com/common-cloud-controls/threat-catalogs), and [control-catalogs](https://github.com/common-cloud-controls/control-catalogs) reference entries from this catalog by ID under the `imports` key. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full schema and examples.
 
-## Reuse a capability from this catalog
+## Delivery
 
-Simply add a block like the one below at the top level of your catalog's YAML, parallel to the metadata object.
-This block will list every imported capability by the ID, directing parsers to pull the rest of the data from the mapping reference that you provided in the Metadata.
+At release time, the [CCC delivery toolkit](https://github.com/finos/common-cloud-controls/tree/main/delivery-toolkit) ingests these files and produces versioned Markdown artifacts for publication.
 
-```yaml
-imported-capabilities:
-  - reference-id: CCC
-    entries:
-      - reference-id: CCC.Core.CP01
-        remarks: Encryption in Transit Enabled by Default
-      - reference-id: CCC.Core.CP02
-        remarks: Encryption at Rest Enabled by Default
-      - reference-id: CCC.Core.CP03
-        remarks: Access Log Publication
-```
+## License
 
-## Reuse a threat from this catalog
-
-Similar to capabilities, add a block like the following to the top level of your catalog's YAML:
-
-```yaml
-imported-threats:
-  - reference-id: CCC
-    entries:
-      - reference-id: CCC.Core.TH01
-        strength: 0 # Not yet specified
-        remarks: Access Control is Misconfigured
-      - reference-id: CCC.Core.TH02
-        strength: 0 # Not yet specified
-        remarks: Data is Intercepted in Transit
-      - reference-id: CCC.Core.TH03
-        strength: 0 # Not yet specified
-        remarks: Deployment Region Network is Untrusted
-```
-
-## Reuse a control from this catalog
-
-Similar to capabilities, add a block like the following to the top level of your catalog's YAML:
-
-```yaml
-imported-controls:
-  - reference-id: CCC
-    entries:
-      - reference-id: CCC.Core.CN01
-        strength: 0 # Not yet specified
-        remarks: Prevent Unencrypted Requests
-      - reference-id: CCC.Core.CN02
-        strength: 0 # Not yet specified
-        remarks: Ensure Data Encryption at Rest
-      - reference-id: CCC.Core.CN03
-        strength: 0 # Not yet specified
-        remarks: Implement Multi-factor Authentication (MFA) for Access
-```
-
-> [!NOTE]
->
-> The comment is a development style decision, and does not get rendered in the final output.
+[Community Specification License 1.0](LICENSE)

@@ -10,36 +10,60 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - uses: actions/checkout@v4
         with:
-          repository: common-cloud-controls/delivery-toolkit
-          path: delivery-toolkit
+          fetch-depth: 0
 
-      - uses: actions/setup-go@v5
-        with:
-          go-version-file: delivery-toolkit/go.mod
-
-      - name: Build ccc
-        run: go build -o /usr/local/bin/ccc ./delivery-toolkit
-
-      - name: Release artifacts
+      - name: Check for changes since last release
+        id: changes
         run: |
-          ccc release all core/ccc "Core" \
-            --capabilities-dir . \
-            --threats-dir . \
-            --controls-dir .
+          PREV_TAG=$(git describe --abbrev=0 --tags HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            echo "No previous tag — including core catalog in first release"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          elif git log "${PREV_TAG}..HEAD" --oneline -- . | grep -q .; then
+            echo "Changes detected since ${PREV_TAG}"
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes since ${PREV_TAG} — skipping"
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Get website token
+      - name: Get app token
+        if: steps.changes.outputs.changed == 'true'
         uses: actions/create-github-app-token@v1
         id: app-token
         with:
           app-id: ${{ vars.CCC_BOT_APP_ID }}
           private-key: ${{ secrets.CCC_BOT_PRIVATE_KEY }}
           owner: common-cloud-controls
-          repositories: website-new
+          repositories: delivery-toolkit,website-new
+
+      - uses: actions/checkout@v4
+        if: steps.changes.outputs.changed == 'true'
+        with:
+          repository: common-cloud-controls/delivery-toolkit
+          path: delivery-toolkit
+          token: ${{ steps.app-token.outputs.token }}
+
+      - uses: actions/setup-go@v5
+        if: steps.changes.outputs.changed == 'true'
+        with:
+          go-version-file: delivery-toolkit/go.mod
+
+      - name: Build ccc
+        if: steps.changes.outputs.changed == 'true'
+        run: go build -o /usr/local/bin/ccc ./delivery-toolkit
+
+      - name: Release artifacts
+        if: steps.changes.outputs.changed == 'true'
+        run: |
+          ccc release all core/ccc "Core" \
+            --capabilities-dir . \
+            --threats-dir . \
+            --controls-dir .
 
       - name: Publish to website
+        if: steps.changes.outputs.changed == 'true'
         run: |
           ccc publish all core/ccc \
             --tag ${{ github.ref_name }} \

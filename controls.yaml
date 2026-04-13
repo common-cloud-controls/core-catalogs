@@ -732,3 +732,271 @@ controls:
           - reference-id: SEF-05
             remarks: Incident Response Metrics (establish and monitor metrics)
             strength: 3
+  - id: CCC.Core.CN15
+    title: Prevent Public Access to Storage Resources
+    group: Access
+    objective: |
+      Ensure that storage resources are not publicly accessible to prevent
+      unauthorized exposure of sensitive data.
+    assessment-requirements:
+      - id: CCC.Core.CN15.AR01
+        text: |
+          When a storage resource is created, its access control settings
+          MUST explicitly deny public read and write access.
+        applicability:
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Configure bucket policies and access control lists (ACLs) to
+          restrict public access. Regularly review permissions to ensure
+          no public access has been inadvertently granted.
+      - id: CCC.Core.CN15.AR02
+        text: |
+          When the URL of a stored object is accessed publicly, the
+          request MUST be denied by policy.
+        applicability:
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Configure bucket policies and access control lists (ACLs) to
+          restrict public access. Regularly review permissions to ensure
+          no public access has been inadvertently granted.
+    threat-mappings:
+      - reference-id: CCC.Core.Threats
+        entries:
+          - reference-id: CCC.Core.TH01
+    guideline-mappings:
+      - reference-id: NIST-CSF
+        entries:
+          - reference-id: PR.AA-05
+      - reference-id: NIST_800_53
+        entries:
+          - reference-id: AC-3
+          - reference-id: SC-7
+  - id: CCC.Core.CN16
+    title: Enforce Data Retention Policies
+    group: Data
+    objective: |
+      Ensure that stored data has a retention policy configured in
+      accordance with the organization's data retention requirements,
+      and that data is automatically deleted after the configured
+      retention period expires.
+    assessment-requirements:
+      - id: CCC.Core.CN16.AR01
+        text: |
+          When a new storage resource is created, its retention policy
+          MUST be configured in accordance with the organization's data
+          retention policy.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Configure lifecycle rules or object retention settings to
+          enforce the required data retention period.
+      - id: CCC.Core.CN16.AR02
+        text: |
+          When the retention policy period expires, data MUST be
+          automatically deleted.
+        applicability:
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Configure lifecycle rules or object retention settings to
+          enforce the required data retention period.
+    threat-mappings:
+      - reference-id: CCC.Core.Threats
+        entries:
+          - reference-id: CCC.Core.TH06
+          - reference-id: CCC.Core.TH07
+    guideline-mappings:
+      - reference-id: NIST-CSF
+        entries:
+          - reference-id: PR.PS-04
+          - reference-id: GV.PO-01
+      - reference-id: NIST_800_53
+        entries:
+          - reference-id: AU-9
+          - reference-id: AU-11
+  - id: CCC.Core.CN17
+    title: Enable Object Lock for Critical Data
+    group: Data
+    objective: |
+      Ensure data immutability by enabling Write Once, Read Many (WORM)
+      protection on storage resources holding critical data, preventing
+      modification or deletion during the defined retention period.
+    assessment-requirements:
+      - id: CCC.Core.CN17.AR01
+        text: |
+          When an attempt is made to modify or delete data before the
+          object lock period expires, the action MUST be denied.
+        applicability:
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Configure object lock policies on storage resources holding
+          critical or compliance-sensitive data.
+    threat-mappings:
+      - reference-id: CCC.Core.Threats
+        entries:
+          - reference-id: CCC.Core.TH07
+    guideline-mappings:
+      - reference-id: NIST-CSF
+        entries:
+          - reference-id: PR.PS-04
+      - reference-id: NIST_800_53
+        entries:
+          - reference-id: AU-9
+          - reference-id: AU-11
+  - id: CCC.Core.CN18
+    title: Restrict Field-Level Access to Sensitive Data
+    group: Access
+    objective: |
+      Configure access to stored data to follow the principle of least
+      privilege, in particular where technically possible limit the data
+      fields users have access to, to prevent accidental exposure to
+      sensitive information such as PII.
+    assessment-requirements:
+      - id: CCC.Core.CN18.AR01
+        text: |
+          When restricted fields are accessed by unauthorized users,
+          those fields MUST remain masked.
+        applicability:
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Review field-level access controls on stored data.
+    threat-mappings:
+      - reference-id: CCC.Core.Threats
+        entries:
+          - reference-id: CCC.Core.TH01
+          - reference-id: CCC.Core.TH07
+    guideline-mappings:
+      - reference-id: NIST-CSF
+        entries:
+          - reference-id: PR.PS-04
+      - reference-id: NIST_800_53
+        entries:
+          - reference-id: AC-6
+          - reference-id: AU-9
+          - reference-id: AC-3
+          - reference-id: PT-2
+          - reference-id: PT-3
+  - id: CCC.Core.CN19
+    title: Require MFA for Deletion of Stored Data
+    group: Access
+    objective: |
+      Ensure that deletion of stored data is protected by multi-factor
+      authentication (MFA), reducing the risk of accidental, unauthorized,
+      or compromised-credential-based data destruction.
+    assessment-requirements:
+      - id: CCC.Core.CN19.AR01
+        text: |
+          When data deletion is attempted, the service MUST require MFA
+          to be successfully completed before the deletion can proceed,
+          regardless of the request interface.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Enable MFA Delete or equivalent multi-factor authentication
+          for delete operations on storage resources.
+      - id: CCC.Core.CN19.AR02
+        text: |
+          When MFA deletion protection is enabled, the service MUST deny
+          any deletion request from an identity that has not satisfied
+          the MFA requirement at the time of the request.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: ""
+      - id: CCC.Core.CN19.AR03
+        text: |
+          When an attempt is made to delete data, the service's audit
+          logs MUST clearly record each deletion attempt, including
+          whether MFA was required and whether validation was met.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: ""
+    threat-mappings:
+      - reference-id: CCC.Core.Threats
+        entries:
+          - reference-id: CCC.Core.TH01
+          - reference-id: CCC.Core.TH06
+          - reference-id: CCC.Core.TH17
+    guideline-mappings:
+      - reference-id: CCM
+        entries:
+          - reference-id: DSP-16
+            remarks: Data Retention and Deletion
+          - reference-id: IAM-12
+            remarks: MFA required for privileged or destructive operations
+      - reference-id: NIST-CSF
+        entries:
+          - reference-id: PR.PS-04
+      - reference-id: NIST_800_53
+        entries:
+          - reference-id: AU-9
+          - reference-id: AU-11
+  - id: CCC.Core.CN20
+    title: Alert on Service Configuration Tampering
+    group: Observability
+    objective: |
+      Ensure that alerts are generated when critical service configuration
+      is disabled, modified, or deleted, indicating a potential defense
+      evasion attempt.
+    assessment-requirements:
+      - id: CCC.Core.CN20.AR01
+        text: |
+          When an attempt is made to disable or delete a critical service
+          component, an alert MUST be generated.
+        applicability:
+          - tlp-clear
+          - tlp-green
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Configure alerting for all critical service configuration
+          changes, including disabling of log sources, deletion of
+          sinks, and modification of forwarding rules.
+      - id: CCC.Core.CN20.AR02
+        text: |
+          When an attempt is made to modify the configuration of a
+          critical service component such as altering retention policies,
+          forwarding rules, or access controls, an alert MUST be
+          generated.
+        applicability:
+          - tlp-amber
+          - tlp-red
+        recommendation: |
+          Configure alerting for all critical service configuration
+          changes, including modification of retention or object lock
+          policies for data stores.
+    threat-mappings:
+      - reference-id: CCC.Core.Threats
+        entries:
+          - reference-id: CCC.Core.TH07
+          - reference-id: CCC.Core.TH16
+    guideline-mappings:
+      - reference-id: NIST-CSF
+        entries:
+          - reference-id: DE.CM-1
+          - reference-id: DE.CM-03
+          - reference-id: DE.CM-09
+      - reference-id: NIST_800_53
+        entries:
+          - reference-id: AU-5
+          - reference-id: AU-6
+          - reference-id: SI-4
+          - reference-id: CA-7

@@ -478,3 +478,136 @@ threats:
           - reference-id: IVS-09
             strength: 1
             remarks: Network Defense (techniques for protection, detection, and timely response)
+  - title: Logging or Audit Coverage is Insufficient
+    id: CCC.Core.TH20
+    group: Observability
+    description: |
+      Security-critical actions or audit events are not logged, reducing the
+      ability to detect threats, conduct post-incident analysis, and maintain
+      compliance with regulatory requirements. Insufficient logging coverage
+      can leave gaps in forensic evidence and delay incident response.
+    capabilities:
+      - reference-id: CCC.Core.Capabilities
+        entries:
+          - reference-id: CCC.Core.CP03
+            remarks: Access Log Publication
+          - reference-id: CCC.Core.CP10
+            remarks: Logging
+    external-mappings:
+      - reference-id: MITRE-ATT&CK
+        entries:
+          - reference-id: T1562.008
+            remarks: "Impair Defenses: Disable Cloud Logs"
+  - title: Sensitive Data is Exposed in Logs or Metrics
+    id: CCC.Core.TH21
+    group: Data
+    description: |
+      Sensitive information such as personally identifiable information,
+      credentials, or security tokens may be captured in logs, metrics, or
+      traces without proper anonymization, masking, or redaction. This creates
+      a data exposure risk if logs are accessed by unintended parties, forwarded
+      to external systems, or displayed in monitoring dashboards.
+    capabilities:
+      - reference-id: CCC.Core.Capabilities
+        entries:
+          - reference-id: CCC.Core.CP03
+            remarks: Access Log Publication
+          - reference-id: CCC.Core.CP09
+            remarks: Metrics Publication
+          - reference-id: CCC.Core.CP10
+            remarks: Logging
+    external-mappings:
+      - reference-id: MITRE-ATT&CK
+        entries:
+          - reference-id: T1530
+            remarks: Data from Cloud Storage
+          - reference-id: T1537
+            remarks: Transfer Data to Cloud Account
+  - title: Log Delivery is Delayed or Degraded
+    id: CCC.Core.TH22
+    group: Observability
+    description: |
+      The log ingestion pipeline experiences performance degradation due to
+      overwhelming log volumes, network bottlenecks, or inefficient processing,
+      leading to delayed availability of log data for analysis and potential
+      log loss. This can increase the time required to detect and investigate
+      threats, impacting incident response effectiveness.
+    capabilities:
+      - reference-id: CCC.Core.Capabilities
+        entries:
+          - reference-id: CCC.Core.CP03
+            remarks: Access Log Publication
+          - reference-id: CCC.Core.CP10
+            remarks: Logging
+    external-mappings:
+      - reference-id: MITRE-ATT&CK
+        entries:
+          - reference-id: T1499
+            remarks: Endpoint Denial of Service
+          - reference-id: T1562.008
+            remarks: "Impair Defenses: Disable Cloud Logs"
+  - title: Retention or Lifecycle Policies are Misconfigured
+    id: CCC.Core.TH23
+    group: Data
+    description: |
+      Retention or lifecycle policies may be misconfigured, causing data to be
+      deleted prematurely, retained beyond legal requirements, or transitioned
+      to inappropriate storage tiers. This can result in loss of critical
+      forensic evidence, non-compliance with regulatory requirements,
+      accumulation of vulnerable artifacts, or unintended data exposure.
+    capabilities:
+      - reference-id: CCC.Core.Capabilities
+        entries:
+          - reference-id: CCC.Core.CP11
+            remarks: Backup
+          - reference-id: CCC.Core.CP18
+            remarks: Versioning
+    external-mappings:
+      - reference-id: MITRE-ATT&CK
+        entries:
+          - reference-id: T1485
+            remarks: Data Destruction
+          - reference-id: T1562.008
+            remarks: "Impair Defenses: Disable Cloud Logs"
+  - title: Insecure Defaults Enable Unauthorized Access
+    id: CCC.Core.TH24
+    group: Access
+    description: |
+      Default configurations such as factory credentials, open firewall rules,
+      or permissive templates may not be changed or disabled before deployment.
+      These insecure defaults provide a well-known entry point for attackers,
+      potentially leading to unauthorized access, data breaches, or propagation
+      of vulnerabilities at scale when templates are reused.
+    capabilities:
+      - reference-id: CCC.Core.Capabilities
+        entries:
+          - reference-id: CCC.Core.CP06
+            remarks: Access Control
+    external-mappings:
+      - reference-id: MITRE-ATT&CK
+        entries:
+          - reference-id: T1078
+            remarks: Valid Accounts
+          - reference-id: T1040
+            remarks: Network Sniffing
+  - title: Credentials are Stale, Unused, or Long-Lived
+    id: CCC.Core.TH25
+    group: Access
+    description: |
+      Static credentials such as access keys or passwords remain active without
+      rotation, or unused identities persist beyond their operational need.
+      Stale and long-lived credentials extend the window of exposure if
+      compromised, and unused credentials represent a persistent, unmonitored
+      attack surface that is less likely to trigger detection when abused.
+    capabilities:
+      - reference-id: CCC.Core.Capabilities
+        entries:
+          - reference-id: CCC.Core.CP06
+            remarks: Access Control
+    external-mappings:
+      - reference-id: MITRE-ATT&CK
+        entries:
+          - reference-id: T1078.004
+            remarks: "Valid Accounts: Cloud Accounts"
+          - reference-id: T1552
+            remarks: Unsecured Credentials
